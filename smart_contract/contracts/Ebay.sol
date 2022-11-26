@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-// users can auction the their objects
-// users can sell the objects
-
 contract Ebay {
+    error Ebay_InSufficient_Amount();
+
     struct Auction {
         uint256 id;
         string name;
@@ -36,7 +35,7 @@ contract Ebay {
         string memory _description,
         uint256 _minPrice,
         string memory _imgUrl
-    ) public {
+    ) public payable {
         require(_minPrice > 0, "Minimum must be greater than 0.");
         uint256[] memory offerIds = new uint256[](0);
 
@@ -50,7 +49,58 @@ contract Ebay {
             0,
             offerIds
         );
-
+        autionLists[msg.sender].push(newAuctionId);
         newAuctionId++;
+    }
+
+    function createOffer(uint256 _auctionId) public payable {
+        Auction storage auction = auctions[_auctionId];
+        Offer storage bestOffer = offers[auction.bestOfferId]
+
+        if(msg.value >= auction.minPrice && msg.value > bestOffer.price){
+            revert Ebay_InSufficient_Amount();
+        }
+
+        auction.bestOfferId = newOfferId;
+        auction.offerIds.push(newOfferId)
+
+        offers[newOfferId]=Offer(newOfferId, _auctionId, payable(msg.sender), msg.value);
+        offerLists[msg.value].push(newOfferId);
+        newOfferId++;
+    }
+
+    function transaction(uint _auctionId) public {
+        Auction storage auction = auctions[_auctionId];
+        Offer storage bestOffer = offers[auction.bestOfferId];
+
+        for(uint256 i =0; i <auction.offerIds.length; i++){
+            uint256 offerId = auction.offerIds[i];
+
+            if(offerId!=auction.bestOfferId){
+                Offer storage offer = offers[offerId];
+                offer.buyer.transfer(offer.price);
+            }
+        }
+
+        auction.seller.transfer(bestOffer.price);
+    }
+
+    function getAllAuctions() public view returns(Auction[] memory){
+        Auction[] memory _auctions = new Auction[](newAuctionId-1);
+
+        for(uint256 i=1; i<newAuctionId;i++){
+            _auctions[i-1] = auctions[i];
+        }
+        return _auctions;
+    }
+
+    function getAuctionCreator(address _user) public view returns(Auction[] memory){
+        uint256[] storage userAuctionIds = auctionList[_user];
+    Auction[] memory _auctions = new Auction[](userAuctionIds.length);
+    for(uint256 i=0; i<userAuctionIds.length; i++){
+        uint256 auctionId = userAuctionIds[i];
+        _auctions[i]=auctions[auctionId];
+    }
+    return _auctions;
     }
 }
