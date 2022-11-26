@@ -4,6 +4,11 @@ pragma solidity ^0.8.9;
 contract Ebay {
     error Ebay_InSufficient_Amount();
 
+    modifier AuctionExist(uint256 _auctionId) {
+        require(_auctionId>0 && _auctionId < newAuctionId, "Auction does not exist.");
+        _i;
+    }
+
     struct Auction {
         uint256 id;
         string name;
@@ -12,18 +17,18 @@ contract Ebay {
         string imgUrl;
         address payable seller;
         uint256 bestOfferId;
-        uint[] offerIds;
+        uint256[] offerIds;
     }
 
     struct Offer {
         uint id;
         uint auctionIds;
         address payable buyer;
-        uint price;
+        uint256 price;
     }
 
-    mapping(uint256 => Auction) public auctions;
-    mapping(uint256 => Offer) public offers;
+    mapping(uint256 => Auction) private auctions;
+    mapping(uint256 => Offer) private offers;
     mapping(address => uint[]) public autionLists;
     mapping(address => uint[]) public offerLists;
 
@@ -53,7 +58,7 @@ contract Ebay {
         newAuctionId++;
     }
 
-    function createOffer(uint256 _auctionId) public payable {
+    function createOffer(uint256 _auctionId) public payable AuctionExist(_auctionId){
         Auction storage auction = auctions[_auctionId];
         Offer storage bestOffer = offers[auction.bestOfferId]
 
@@ -69,7 +74,7 @@ contract Ebay {
         newOfferId++;
     }
 
-    function transaction(uint _auctionId) public {
+    function transaction(uint _auctionId) public AuctionExist(_auctionId) {
         Auction storage auction = auctions[_auctionId];
         Offer storage bestOffer = offers[auction.bestOfferId];
 
@@ -95,12 +100,23 @@ contract Ebay {
     }
 
     function getAuctionCreator(address _user) public view returns(Auction[] memory){
-        uint256[] storage userAuctionIds = auctionList[_user];
+    uint256[] storage userAuctionIds = auctionList[_user];
     Auction[] memory _auctions = new Auction[](userAuctionIds.length);
     for(uint256 i=0; i<userAuctionIds.length; i++){
         uint256 auctionId = userAuctionIds[i];
         _auctions[i]=auctions[auctionId];
     }
     return _auctions;
+    } 
+
+    function getUserOffers(address _user) public view returns(Offer[] memory){
+        uint256[] storage userOfferIds = offerLists[_user];
+        Offer[] memory _offer = new Offer(userOfferIds.length)
+
+        for (uint256 i = 0; i <userOfferIds.length; i++) {
+            uint offerId = userOfferIds[i];
+            _offer[i]=offers[offerId];
+        }
+        return  _offer;
     }
 }
