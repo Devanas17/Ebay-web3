@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.6;
 
 contract Ebay {
     error Ebay_InSufficient_Amount();
@@ -26,8 +26,8 @@ contract Ebay {
     }
 
     struct Offer {
-        uint id;
-        uint auctionIds;
+        uint256 id;
+        uint256 auctionIds;
         address payable buyer;
         uint256 price;
     }
@@ -47,11 +47,38 @@ contract Ebay {
 
     mapping(uint256 => Auction) private auctions;
     mapping(uint256 => Offer) private offers;
-    mapping(address => uint[]) public auctionLists;
-    mapping(address => uint[]) public offerLists;
+    mapping(address => uint256[]) private auctionLists;
+    mapping(address => uint256[]) private offerLists;
+    mapping(uint256 => Product) private products;
+    address payable[] private buyers;
 
     uint256 private newAuctionId = 1;
     uint256 private newOfferId = 1;
+    uint256 productCounter = 1;
+
+    function listNewProduct(
+        string memory _name,
+        string memory _description,
+        string memory _category,
+        string memory _imgUrl,
+        uint256 _price,
+        uint256 _rating
+    ) public {
+        Product memory newProduct = Product({
+            buyer: address(0),
+            seller: msg.sender,
+            id: productCounter,
+            price: _price,
+            rating: _rating,
+            name: _name,
+            description: _description,
+            category: _category,
+            imgUrl: _imgUrl
+        });
+
+        products[productCounter] = newProduct;
+        productCounter++;
+    }
 
     function createAuction(
         string calldata _name,
@@ -80,9 +107,11 @@ contract Ebay {
         newAuctionId++;
     }
 
-    function createOffer(
-        uint256 _auctionId
-    ) public payable AuctionExist(_auctionId) {
+    function createOffer(uint256 _auctionId)
+        public
+        payable
+        AuctionExist(_auctionId)
+    {
         Auction storage auction = auctions[_auctionId];
         Offer storage bestOffer = offers[auction.bestOfferId];
 
@@ -103,7 +132,7 @@ contract Ebay {
         newOfferId++;
     }
 
-    function transaction(uint _auctionId) public AuctionExist(_auctionId) {
+    function transaction(uint256 _auctionId) public AuctionExist(_auctionId) {
         Auction storage auction = auctions[_auctionId];
         Offer storage bestOffer = offers[auction.bestOfferId];
 
@@ -119,6 +148,23 @@ contract Ebay {
         auction.seller.transfer(bestOffer.price);
     }
 
+    // purchase product
+    function purchaseItem(uint256 _id) public payable {
+        Product storage product = products[_id];
+
+        require(msg.value >= product.price, "Invalid amount sent for product");
+        require(product.seller != address(0));
+        require(product.buyer == address(0), "Item has been bought");
+        require(
+            msg.sender != product.seller,
+            "Seller cannot buy their own product"
+        );
+
+        product.buyer = msg.sender;
+        buyers.push(payable(msg.sender));
+        payable(product.seller).transfer(msg.value);
+    }
+
     function getAllAuctions() public view returns (Auction[] memory) {
         Auction[] memory _auctions = new Auction[](newAuctionId - 1);
 
@@ -128,9 +174,11 @@ contract Ebay {
         return _auctions;
     }
 
-    function getAuctionCreator(
-        address _user
-    ) public view returns (Auction[] memory) {
+    function getAuctionCreator(address _user)
+        public
+        view
+        returns (Auction[] memory)
+    {
         uint256[] storage userAuctionIds = auctionLists[_user];
         Auction[] memory _auctions = new Auction[](userAuctionIds.length);
         for (uint256 i = 0; i < userAuctionIds.length; i++) {
@@ -145,9 +193,13 @@ contract Ebay {
         Offer[] memory _offer = new Offer[](userOfferIds.length);
 
         for (uint256 i = 0; i < userOfferIds.length; i++) {
-            uint offerId = userOfferIds[i];
+            uint256 offerId = userOfferIds[i];
             _offer[i] = offers[offerId];
         }
         return _offer;
+    }
+
+    function getNumberOfProducts() public view returns (uint256) {
+        return productCounter;
     }
 }
