@@ -12,6 +12,42 @@ contract Ebay {
         _;
     }
 
+    // events
+    event AuctionCreation(
+        uint256 id,
+        string name,
+        string description,
+        uint256 minPrice,
+        string imgUrl,
+        uint256 rating,
+        string category,
+        address payable seller,
+        uint256 bestOfferId,
+        uint256[] offerIds
+    );
+
+    event OfferCreation(
+        uint256 id,
+        uint256 auctionIds,
+        address payable buyer,
+        uint256 price
+    );
+
+    event ListNewProduct(
+        address buyer,
+        address seller,
+        uint256 id,
+        uint256 price,
+        uint256 rating,
+        string name,
+        string description,
+        string category,
+        string imgUrl
+    );
+
+    event Transaction(uint256 indexed auctionId);
+    event PurchaseItem(uint256 indexed id);
+
     struct Auction {
         uint256 id;
         string name;
@@ -59,8 +95,8 @@ contract Ebay {
     function listNewProduct(
         string memory _name,
         string memory _description,
-        string memory _category,
         string memory _imgUrl,
+        string memory _category,
         uint256 _price,
         uint256 _rating
     ) public {
@@ -77,6 +113,17 @@ contract Ebay {
         });
 
         products[productCounter] = newProduct;
+        emit ListNewProduct(
+            address(0),
+            msg.sender,
+            productCounter,
+            _price,
+            _rating,
+            _name,
+            _description,
+            _category,
+            _imgUrl
+        );
         productCounter++;
     }
 
@@ -104,6 +151,18 @@ contract Ebay {
             offerIds
         );
         auctionLists[msg.sender].push(newAuctionId);
+        emit AuctionCreation(
+            newAuctionId,
+            _name,
+            _description,
+            _minPrice,
+            _imgUrl,
+            _rating,
+            _category,
+            payable(msg.sender),
+            0,
+            offerIds
+        );
         newAuctionId++;
     }
 
@@ -127,6 +186,12 @@ contract Ebay {
             msg.value
         );
         offerLists[msg.sender].push(newOfferId);
+        emit OfferCreation(
+            newOfferId,
+            _auctionId,
+            payable(msg.sender),
+            msg.value
+        );
         newOfferId++;
     }
 
@@ -142,8 +207,8 @@ contract Ebay {
                 offer.buyer.transfer(offer.price);
             }
         }
-
         auction.seller.transfer(bestOffer.price);
+        emit Transaction(_auctionId);
     }
 
     // purchase product
@@ -161,6 +226,7 @@ contract Ebay {
         product.buyer = msg.sender;
         buyers.push(payable(msg.sender));
         payable(product.seller).transfer(msg.value);
+        emit PurchaseItem(_id);
     }
 
     function getAllAuctions() public view returns (Auction[] memory) {
