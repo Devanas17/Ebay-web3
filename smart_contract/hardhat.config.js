@@ -1,7 +1,11 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomiclabs/hardhat-ethers");
+require("dotenv").config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
+const MATIC_RPC_URL = process.env.MATIC_RPC_URL;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+
 module.exports = {
   defaultNetwork: "hardhat",
   allowUnlimitedContractSize: true,

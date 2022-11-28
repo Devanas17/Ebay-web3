@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.6;
+pragma solidity 0.8.17;
 
 contract Ebay {
     error Ebay_InSufficient_Amount();
@@ -54,7 +54,7 @@ contract Ebay {
 
     uint256 private newAuctionId = 1;
     uint256 private newOfferId = 1;
-    uint256 productCounter = 1;
+    uint256 productCounter = 0;
 
     function listNewProduct(
         string memory _name,
@@ -107,11 +107,9 @@ contract Ebay {
         newAuctionId++;
     }
 
-    function createOffer(uint256 _auctionId)
-        public
-        payable
-        AuctionExist(_auctionId)
-    {
+    function createOffer(
+        uint256 _auctionId
+    ) public payable AuctionExist(_auctionId) {
         Auction storage auction = auctions[_auctionId];
         Offer storage bestOffer = offers[auction.bestOfferId];
 
@@ -174,11 +172,9 @@ contract Ebay {
         return _auctions;
     }
 
-    function getAuctionCreator(address _user)
-        public
-        view
-        returns (Auction[] memory)
-    {
+    function getAuctionCreator(
+        address _user
+    ) public view returns (Auction[] memory) {
         uint256[] storage userAuctionIds = auctionLists[_user];
         Auction[] memory _auctions = new Auction[](userAuctionIds.length);
         for (uint256 i = 0; i < userAuctionIds.length; i++) {
