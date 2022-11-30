@@ -1,10 +1,13 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import {ConnectButton} from "@rainbow-me/rainbowkit"
 import Link from 'next/link'
 import {BellIcon, ShoppingCartIcon, ChevronDownIcon, MagnifyingGlassIcon} from "@heroicons/react/24/outline"
 import Image from "next/image"
 
+
+
 const Header = () => {
+  
   return (
     <div className=' max-w-6xl mx-auto p-3'>
       <nav className='flex items-center justify-between'>

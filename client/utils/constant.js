@@ -1,3 +1,18 @@
+export const modalStyles = {
+  content: {
+    height: "fit-content",
+    width: "fit-content",
+    margin: "auto",
+    marginTop: "10px",
+    display: "flex",
+    padding: "0px",
+  },
+  overlay: {
+    backgroundColor: "rgb(0 0 0 / 74%)",
+    overflow: "scroll",
+  },
+};
+
 export const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const contractABI = [
