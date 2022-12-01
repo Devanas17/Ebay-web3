@@ -1,18 +1,23 @@
+import React, {useState, useEffect, useContext} from "react"
 import { ethers } from 'ethers';
 import Head from 'next/head'
 import Image from 'next/image'
-import {Toaster} from "react-hot-toast"
+import toast, {Toaster} from "react-hot-toast"
 import Modal from "react-modal"
-import router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import Header from '../components/Header';
 import SellItemModal from '../components/SellItemModal';
 import Link from 'next/link';
 import {modalStyles} from "../utils/constant"
+import {TransactionContext} from "../context/TransactionContract"
 
 
-Modal.setAppElement('#__next')
+const notify = () => toast('Here is your toast.');
+Modal.setAppElement('#__next')  
 
 export default function Home() {
+  const router = useRouter()
+  const {getAllItems, value} = useContext(TransactionContext)
  
 
   return (
@@ -26,6 +31,14 @@ export default function Home() {
         <button className=' text-blue-600 px-5 cursor-pointer py-2 rounded-sm hover:bg-blue-600 hover:text-white border-2 border-blue-600 transition ease-in duration-200 text-sm'>Create Auction</button>
       </div>
 
+      <button className="bg-blue-600 text-white px-5 cursor-pointer py-2 rounded-sm hover:bg-white hover:text-blue-600 border-2 border-blue-600 transition ease-in duration-200 text-sm" onClick={getAllItems}>Get Number of Products</button>
+      <p>The Product Number:{value}</p>
+
+      <div>
+      <button onClick={notify}>Make me a toast</button>
+      <Toaster />
+    </div>
+ 
       <Modal
         isOpen={!!router.query.sell}
         onRequestClose={() => router.push('/')}

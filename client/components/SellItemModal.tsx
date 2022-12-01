@@ -1,12 +1,15 @@
 import React, {useState, useContext} from "react"
 import {Uploader} from "uploader"
-import { toast } from "react-hot-toast"
+import  toast, { Toaster }  from "react-hot-toast"
 import {TransactionContext} from "../context/TransactionContract"
 
 
 const uploader = new Uploader({
     apiKey: "free",
 })
+
+const notify = () => toast('Please fill all the details!');
+
 
 const SellItemModal = () => {
 const {sellProduct} = useContext(TransactionContext)
@@ -17,33 +20,41 @@ const {sellProduct} = useContext(TransactionContext)
   const [price, setPrice] = useState('')
   const [rating, setRating] = useState('')
   const [imgUrl, setImgUrl] = useState('')
-
-
+ console.log(name)
+ console.log(description)
+ console.log(category)
+ console.log(price)
+ console.log(rating)
+ 
   const handleUploadProductImage =async () => {
     uploader.open({multi: false}).then((files: string | any[]) => {
       if(files.length === 0){
         alert("No files selected.")
       } else {
-        setImgUrl(files[0].fileUrl)
+        setImgUrl(files[0].fileUrl)  
       }
     }).catch((err: any) => {
       console.log(err)
     })
   }
 
-  const handleSubmit =async (event: any) => {
-    event.preventDefault()
-    if(!name || !description || !category || !price || !rating || !imgUrl) return
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    if (!name || !description || !category || !price || !rating || !imgUrl){
+
+      toast.error("Please fill all the details")
+      return
+    }
 
     toast.promise(
       sellProduct(name, description, category, imgUrl, price, rating),
       {
-        loading: "Listing Item... This can take a few seconds. ⏳",
-        success: "Item listed! 🎉",
-        error: "Error listing item. 😢",
-      }
+        loading: 'Listing Item... This can take a few seconds. ⏳',
+        success: 'Item listed! 🎉',
+        error: 'Error listing item. 😢',
+      },
     )
   }
+
 
   return (
     <div className='sell-container space-y-3  p-7 m-6 border-2 border-gray-300 rounded-md min-w-[400px] bg-white'>
@@ -69,7 +80,7 @@ const {sellProduct} = useContext(TransactionContext)
       <span className='sell-input-title text-lg font-semibold px-1'>Description</span>
       <textarea
         className='sell-input-textbox  text-base font-normal border border-gray-500 p-3 rounded-sm'
-        rows='4'
+        // rows='4'
         type='text'
         value={description}
         onChange={event => setDescription(event.target.value)}

@@ -16,7 +16,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import {TransactionProvider} from "../context/TransactionContract"
 
 const {chains, provider} = configureChains(
-  [chain.goerli, chain.polygonMumbai],
+  [chain.localhost, chain.goerli, chain.polygonMumbai],
   [publicProvider()]
 )
 

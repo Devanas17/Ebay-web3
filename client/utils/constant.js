@@ -13,7 +13,7 @@ export const modalStyles = {
   },
 };
 
-export const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+export const contractAddress = "0xaD6CF47712834AD3A04A4B1A027238299778cAbE";
 
 export const contractABI = [
   {
