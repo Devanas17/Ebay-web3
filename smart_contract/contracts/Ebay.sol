@@ -171,10 +171,10 @@ contract Ebay {
     ) public payable AuctionExist(_auctionId) {
         Auction storage auction = auctions[_auctionId];
         Offer storage bestOffer = offers[auction.bestOfferId];
-
-        if (msg.value >= auction.minPrice && msg.value > bestOffer.price) {
-            revert Ebay_InSufficient_Amount();
-        }
+        require(
+            msg.value >= auction.minPrice && msg.value > bestOffer.price,
+            "Pay more"
+        );
 
         auction.bestOfferId = newOfferId;
         auction.offerIds.push(newOfferId);
@@ -259,6 +259,14 @@ contract Ebay {
             _offer[i] = offers[offerId];
         }
         return _offer;
+    }
+
+    function getAllItems() public view returns (Product[] memory) {
+        Product[] memory _products = new Product[](productCounter);
+        for (uint256 i = 0; i < productCounter; i++) {
+            _products[0] = products[i];
+        }
+        return _products;
     }
 
     function getNumberOfProducts() public view returns (uint256) {
