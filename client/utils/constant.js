@@ -13,7 +13,7 @@ export const modalStyles = {
   },
 };
 
-export const contractAddress = "0xaD6CF47712834AD3A04A4B1A027238299778cAbE";
+export const contractAddress = "0xb93283325766EcA98d89B88E24dbd58cFFFB6c57";
 
 export const contractABI = [
   {
@@ -315,6 +315,66 @@ export const contractABI = [
           },
         ],
         internalType: "struct Ebay.Auction[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAllItems",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "buyer",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "seller",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "rating",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "category",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "imgUrl",
+            type: "string",
+          },
+        ],
+        internalType: "struct Ebay.Product[]",
         name: "",
         type: "tuple[]",
       },
