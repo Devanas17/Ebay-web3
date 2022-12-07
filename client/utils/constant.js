@@ -13,7 +13,7 @@ export const modalStyles = {
   },
 };
 
-export const contractAddress = "0xb93283325766EcA98d89B88E24dbd58cFFFB6c57";
+export const contractAddress = "0x4B7Bc33228e732a09ffEd614186F3a5600F55370";
 
 export const contractABI = [
   {
@@ -543,6 +543,65 @@ export const contractABI = [
     name: "listNewProduct",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "products",
+    outputs: [
+      {
+        internalType: "address",
+        name: "buyer",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "seller",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "rating",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "category",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "imgUrl",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

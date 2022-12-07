@@ -3,7 +3,7 @@ import { Uploader } from "uploader";
 import toast, { Toaster } from "react-hot-toast";
 import { TransactionContext } from "../context/TransactionContract";
 
-const uploader = Uploader({
+const uploader = Uploader({ 
   apiKey: "free",
 });
 
@@ -18,11 +18,11 @@ const SellItemModal = () => {
   const [price, setPrice] = useState("");
   const [rating, setRating] = useState("");
   const [imgUrl, setImgUrl] = useState("");
-  //  console.log(name)
-  //  console.log(description)
-  //  console.log(category)
-  //  console.log(price)
-  //  console.log(rating)
+   console.log(name)
+   console.log(description)
+   console.log(category)
+   console.log(price)
+   console.log(rating)
 
   const handleUploadProductImage = async () => {
     uploader

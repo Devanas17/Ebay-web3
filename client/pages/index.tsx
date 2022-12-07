@@ -10,7 +10,7 @@ import SellItemModal from '../components/SellItemModal';
 import Link from 'next/link';
 import {modalStyles} from "../utils/constant"
 import {TransactionContext} from "../context/TransactionContract"
-import Product from "../components/Product";
+import ProductSection from "../components/ProductSection";
 
 
 
@@ -39,13 +39,13 @@ export default function Home() {
       </div>
 
      
-      <div className="max-w-6xl mx-auto p-4"> 
+      <div className="max-w-6xl mx-auto p-4">  
           <section className='container-results'>
             <div className='ebayclone-Hits'>
-              <div className='ebayclone-Hits-list'>
-                {products.map((item: any, index: React.Key | null | undefined) => {
-                  return <Product product={item} key={index} />
-                })}
+              <div className='ebayclone-Hits-list grid grid-cols-1	sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 mx-auto  '>
+                {products?.map((item: { name: string; description: string; category: string; imgUrl: string; price: string; rating: string; }, index: React.Key | null | undefined) => (
+                  <ProductSection  name={item.name} description={item.description} category={item?.category} price={item.price} imgURL={item.imgUrl} rating={item.rating} key={index} />
+                ))}
               </div>
             </div>
 
@@ -59,6 +59,7 @@ export default function Home() {
       >
         <SellItemModal/>
       </Modal>
-    </div>
+    </div> 
   )
 }
+ 

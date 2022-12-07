@@ -37,7 +37,6 @@ export const TransactionProvider = ({ children }) => {
     price,
     rating
   ) => {
-    // if (!contract) return;
     try {
       if (contract) {
         console.log("Going to pop wallet now to pay gas...");
@@ -63,13 +62,38 @@ export const TransactionProvider = ({ children }) => {
   const getItem = async () => {
     try {
       if (contract) {
-        let formattedProduct = await contract.getAllItems();
-        console.log("formattedProduct", formattedProduct);
-        setProducts((prev) => [...prev, formattedProduct]);
+        let products = await contract.getAllItems();
+        console.log("products", products);
+
+        for (let i = 0; i <= products.length; i++) {
+          const formatedProduct = {
+            id: products[i]?.id,
+            buyer: products[i].buyer,
+            seller: products[i]?.seller,
+            name: products[i]?.name,
+            description: products[i]?.description,
+            category: products[i]?.category,
+            imgUrl: products[i]?.imgUrl,
+            price: ethers.utils.formatEther(products[i]?.price),
+            rating: products[i]?.rating,
+          };
+          console.log("Formatted ---", formatedProduct);
+          setProducts((prev) => [...prev, formatedProduct]);
+        }
       }
     } catch (error) {
       console.log(error);
-      throw "Ethereum does not found";
+      throw "Not getting Item";
+    }
+  };
+
+  const buyProduct = async () => {
+    try {
+      if (contract) {
+      }
+    } catch (error) {
+      console.log(error);
+      throw "Buy Product Not working";
     }
   };
 
